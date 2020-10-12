@@ -1,0 +1,11 @@
+{
+    "name": "com.mvcrx.main",
+    "displayName": "MVCRX",
+    "version": "3.0.0",
+    "unity": "2019.4",
+    "keywords": ["mvcrx", "mvc"],
+	"description": "MVCRX Package",
+	"dependencies": {
+		"com.unity.nuget.newtonsoft-json": "2.0.0-preview"
+	}
+}
