@@ -7,6 +7,11 @@ Project: MVCC 3.0 (MVCRX)
 
 Unity3D MVC Framework for Unity2019 and higher
 
+Based on Previous work available here:
+- https://github.com/jeffscm/mvcrx
+- https://github.com/jeffscm/mvcc2
+- https://github.com/jeffscm/mvccunity
+
 Copyright (c) 2015 Jefferson Raulino Scomação
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +32,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,7 +53,7 @@ namespace MVCC.Editor
         private bool _addControllerToObject = true;
 
         private bool _doAddControllerToObject;
-        private bool _doAddViewToObject;
+        private bool _doAddMonoControllerToObject;
         private string _currentAsset = string.Empty;
 
         static string outputFolder;
@@ -65,6 +69,22 @@ namespace MVCC.Editor
             if (!string.IsNullOrEmpty(scControllerCreate))
             {
                 _currentAsset = scControllerCreate;
+            }
+
+            var newController = PlayerPrefs.GetString("MVCC_NEW_VIEWCONTROLLER");
+            if (!string.IsNullOrEmpty(newController))
+            {
+                _newViewNavName = newController;
+                _doAddControllerToObject = true;
+                PlayerPrefs.DeleteKey("MVCC_NEW_VIEWCONTROLLER");
+            }
+
+            newController = PlayerPrefs.GetString("MVCC_NEW_CONTROLLER");
+            if (!string.IsNullOrEmpty(newController))
+            {
+                _newViewName = newController;
+                _doAddMonoControllerToObject = true;
+                PlayerPrefs.DeleteKey("MVCC_NEW_CONTROLLER");
             }
         }
 
@@ -97,7 +117,9 @@ namespace MVCC.Editor
                 _doAddControllerToObject = false;
                 AssetDatabase.Refresh();
                 var temp = Selection.activeGameObject;
-                Assembly asm = typeof(MVCC.App).Assembly;
+
+                var asm = EditorUtil.GetProjectAssembly();
+
                 var newType = asm.GetType(currentProject + ".Controller." + _newViewNavName);
                 var src = temp.AddComponent(newType);
                 (src as MVCC.AppMonoController).controllerType = CONTROLLER_TYPE.NAV;
@@ -110,12 +132,12 @@ namespace MVCC.Editor
                 return;
             }
 
-            if (_doAddViewToObject)
+            if (_doAddMonoControllerToObject)
             {
-                _doAddViewToObject = false; 
+                _doAddMonoControllerToObject = false; 
                 AssetDatabase.Refresh();
                 var temp = Selection.activeGameObject;
-                Assembly asm = typeof(MVCC.App).Assembly;
+                var asm = EditorUtil.GetProjectAssembly();
                 MVCCLog.Log(currentProject + ".Controller." + _newViewName);
                 var newType = asm.GetType(currentProject + ".Controller." + _newViewName);
                 var src = temp.AddComponent(newType);
@@ -138,7 +160,7 @@ namespace MVCC.Editor
                 EditorUtil.WriteData(outputFolder + "Controllers/", _newViewNavName + ".cs", content);
                 if (_addControllerToObject && Selection.activeGameObject != null)
                 {
-                    _doAddControllerToObject = true;
+                    PlayerPrefs.SetString("MVCC_NEW_VIEWCONTROLLER", _newViewNavName);
                 }
                 AssetDatabase.Refresh();
             }
@@ -158,7 +180,7 @@ namespace MVCC.Editor
                 EditorUtil.WriteData(outputFolder + "Controllers/", _newViewName + ".cs", content);
                 if (_addViewToObject && Selection.activeGameObject != null)
                 {
-                    _doAddViewToObject = true;
+                    PlayerPrefs.SetString("MVCC_NEW_CONTROLLER", _newViewName);
                 }
                 AssetDatabase.Refresh();
             }

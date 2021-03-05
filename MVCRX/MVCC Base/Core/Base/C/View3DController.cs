@@ -7,6 +7,13 @@ Project: MVCC 3.0 (MVCRX)
 
 Unity3D MVC Framework for Unity2019 and higher
 
+Based on Previous work available here:
+- https://github.com/jeffscm/mvcrx
+- https://github.com/jeffscm/mvcc2
+- https://github.com/jeffscm/mvccunity
+
+
+
 Copyright (c) 2015 Jefferson Raulino Scomação
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

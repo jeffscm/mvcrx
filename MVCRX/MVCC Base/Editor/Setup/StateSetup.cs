@@ -7,6 +7,11 @@ Project: MVCC 3.0 (MVCRX)
 
 Unity3D MVC Framework for Unity2019 and higher
 
+Based on Previous work available here:
+- https://github.com/jeffscm/mvcrx
+- https://github.com/jeffscm/mvcc2
+- https://github.com/jeffscm/mvccunity
+
 Copyright (c) 2015 Jefferson Raulino Scomação
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +32,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -126,13 +130,12 @@ namespace MVCC.Editor
 					contentParam = contentParam.Replace("%NAMESPACE%", currentProject);
 					contentParam = contentParam.Replace("%NEWSTATE%", _newStateName);
                     EditorUtil.WriteData(outputFolder + "Events/", _newStateName + "Param.cs", contentParam);
-
 					content = content.Replace("%NEWPARAM%", $"{_newStateName}Param {EditorUtil.PascalToCamelCase(_newStateName)}Param");
-				}
+                }
                 else
 				{
 					content = content.Replace("%NEWPARAM%", string.Empty);
-				}
+                }
 				EditorUtil.WriteData(outputFolder + "Events/", "I" + _newStateName + ".cs", content);
 
                 if (_addDefaultUIState)
@@ -214,11 +217,13 @@ namespace MVCC.Editor
             {
                 newfile = newfile.Replace("%NEWPARAMDECL%", $"public {newParam} {EditorUtil.PascalToCamelCase(newParam)};");
                 newfile = newfile.Replace("%NEWPARAM%", EditorUtil.PascalToCamelCase(newParam));
+                newfile = newfile.Replace("%NEWPARAM_TARGET%", EditorUtil.PascalToCamelCase(newParam)+ ".target = sender.gameObject;");
             }
             else
             {
                 newfile = newfile.Replace("%NEWPARAMDECL%", string.Empty);
                 newfile = newfile.Replace("%NEWPARAM%", string.Empty);
+                newfile = newfile.Replace("%NEWPARAM_TARGET%", string.Empty);
             }
             EditorUtil.CreateDir(outputFolder + "Events/UIEvents/");
             string path = outputFolder + "Events/UIEvents/" + _currentAsset + ".cs";

@@ -1,7 +1,7 @@
 {
     "name": "com.mvcrx.main",
     "displayName": "MVCRX",
-    "version": "3.0.0",
+    "version": "0.0.1",
     "unity": "2019.4",
     "keywords": ["mvcrx", "mvc"],
 	"description": "MVCRX Package",

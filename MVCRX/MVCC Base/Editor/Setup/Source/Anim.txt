@@ -7,6 +7,11 @@ Project: MVCC 3.0 (MVCRX)
 
 Unity3D MVC Framework for Unity2019 and higher
 
+Based on Previous work available here:
+- https://github.com/jeffscm/mvcrx
+- https://github.com/jeffscm/mvcc2
+- https://github.com/jeffscm/mvccunity
+
 Copyright (c) 2015 Jefferson Raulino Scomação
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,7 +32,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,21 +43,24 @@ namespace %NAMESPACE%
     public class DefaultAnim : IAnimate
     {
 
-         public void FadeOut(CanvasGroup cg, bool onOut, AnimateSettings settings, Action onComplete = null)
+       public void FadeOut(CanvasGroup cg, bool onOut, AnimateSettings settings, Action onComplete = null)
         {
-            cg.blocksRaycasts = settings.cgActive;
+            
             if (!cg.gameObject.activeInHierarchy)
             {
                 cg.alpha = settings.fade;
                 cg.gameObject.SetActive(false);
                 return;
             }
-            
+
+            var savedRaycast = cg.blocksRaycasts;
+            cg.blocksRaycasts = settings.cgActive;
             cg.gameObject.SetActive(true);
             LeanTween.cancel(cg.gameObject);
 
             LeanTween.alphaCanvas(cg, settings.fade, settings.time).setOnComplete(() =>
             {
+                cg.blocksRaycasts = savedRaycast;
                 if (onComplete != null)
                     onComplete();
 
@@ -63,12 +70,14 @@ namespace %NAMESPACE%
 
         public void FadeIn(CanvasGroup cg, AnimateSettings settings, Action onComplete = null)
         {
+            var savedRaycast = cg.blocksRaycasts;
             cg.blocksRaycasts = settings.cgActive;
             cg.gameObject.SetActive(true);
             LeanTween.cancel(cg.gameObject);
 
             LeanTween.alphaCanvas(cg, settings.fade, settings.time).setOnComplete(() =>
             {
+                cg.blocksRaycasts = savedRaycast;
                 if (onComplete != null)
                     onComplete();
             }).setDelay(settings.delay).setEase(settings.tweenType);
@@ -77,6 +86,7 @@ namespace %NAMESPACE%
 
         public void MoveXIn(CanvasGroup cg, AnimateSettings settings, Action onComplete = null)
         {
+            var savedRaycast = cg.blocksRaycasts;
             cg.blocksRaycasts = settings.cgActive;
 
             var isActive = cg.gameObject.activeInHierarchy;
@@ -104,6 +114,7 @@ namespace %NAMESPACE%
             //if (cg != null) LeanTween.alphaCanvas(cg, 1f, speed);
             LeanTween.moveX(rectTrans, settings.animateDistance, settings.time).setDelay(settings.delay).setEase(settings.tweenType).setOnComplete(() =>
             {
+                cg.blocksRaycasts = savedRaycast;
                 if (onComplete != null)
                     onComplete();
             });
@@ -125,27 +136,40 @@ namespace %NAMESPACE%
             cg.gameObject.SetActive(false);
         }
 
-        public void MoveXOut(CanvasGroup cg, bool onOut, AnimateSettings settings, bool toRight = true, Action onComplete = null)
+        public void MoveXOut(CanvasGroup cg, bool onOut, AnimateSettings settings, Action onComplete = null)
         {
-
             if (onOut)
             {
                 if (!cg.gameObject.activeInHierarchy) return;
             }
+            var savedRaycast = cg.blocksRaycasts;
             cg.blocksRaycasts = settings.cgActive;
+
             var rectTrans = (RectTransform)cg.gameObject.transform;
-
-            float rectWidth = (toRight) ? rectTrans.rect.width : -rectTrans.rect.width;
-
-            float f = (settings.animateDistance == 0f) ? rectWidth : settings.animateDistance;
-
-            cg.gameObject.SetActive(true);
+            var v = rectTrans.anchoredPosition;            
+            if (settings.animateDistance != 0f || settings.animateType == NAVANIM.MOVEXABS) //TODO Remove != 0f
+            {
+                v.x = settings.animateDistance;
+            }
+            else
+            {
+                if (settings.animateType == NAVANIM.MOVERIGHT)
+                {
+                    v.x = Math.Abs(rectTrans.rect.width);
+                }
+                else if (settings.animateType == NAVANIM.MOVELEFT)
+                {
+                    v.x = -Math.Abs(rectTrans.rect.width);
+                }
+            }
+            
             LeanTween.cancel(cg.gameObject);
-            //if (cg != null) LeanTween.alphaCanvas(cg, 0f, speed);
-            LeanTween.moveX(rectTrans, f, settings.time).setDelay(settings.delay).setEase(settings.tweenType).setOnComplete(() =>
+            LeanTween.moveX(rectTrans, v.x, settings.time).setDelay(settings.delay).setEase(settings.tweenType).setOnComplete(() =>
             {
                 if (onComplete != null)
                     onComplete();
+
+                cg.blocksRaycasts = savedRaycast;
 
                 if (onOut)
                     cg.gameObject.SetActive(false);
@@ -157,7 +181,6 @@ namespace %NAMESPACE%
                 LeanTween.alphaCanvas(cg, settings.fade, settings.time).setDelay(settings.delay);
             }
         }
-
 
         public void MoveYIn(CanvasGroup cg, AnimateSettings settings, Action onComplete = null)
         {

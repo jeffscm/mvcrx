@@ -7,6 +7,11 @@ Project: MVCC 3.0 (MVCRX)
 
 Unity3D MVC Framework for Unity2019 and higher
 
+Based on Previous work available here:
+- https://github.com/jeffscm/mvcrx
+- https://github.com/jeffscm/mvcc2
+- https://github.com/jeffscm/mvccunity
+
 Copyright (c) 2015 Jefferson Raulino Scomação
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,6 +32,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,7 +79,7 @@ namespace MVCC.Editor
 			_options = _types.Select(x => x.Name).ToArray();
 			_paramOptions = EditorUtil.GetAllParamEntities().Select(x => x.Name).ToArray();
 
-            var asm = typeof(MVCC.App).Assembly;
+            var asm = EditorUtil.GetProjectAssembly();
             _namespacesOptions = asm.GetTypes()
                          .Select(t => t.Namespace).Where(s => s != null && s.StartsWith(_currentProject + ".", StringComparison.Ordinal))
                          .Distinct().ToArray();
@@ -151,8 +157,8 @@ namespace MVCC.Editor
                 var obj = new GameObject();
 				obj.name = "MVCC - " + _currentProject;
 
-				var asm = EditorUtil.GetAssemblyByName("Assembly-CSharp");
-				var newType = asm.GetType("MVCC.Controller.DefaultStart");
+                var asm = EditorUtil.GetProjectAssembly();
+                var newType = asm.GetType("MVCC.Controller.DefaultStart");
 				var src = obj.AddComponent(newType);
 				(src as MVCC.AppMonoController).controllerType = MVCC.CONTROLLER_TYPE.ALL;
 				obj.AddComponent<AudioSource>(); //default sound system

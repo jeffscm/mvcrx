@@ -2,6 +2,11 @@
 
 Install this package to have full access to MVC RX framework.
 
+# Contributors
+
+- Mattijs Driel
+- Geert Lugtenberg
+
 ## Requirements
 
 + Unity 2019 and higher
@@ -26,3 +31,4 @@ Install this package to have full access to MVC RX framework.
 
 + 3D View
     - UI3DView : Wrapper to handle multiple views for 3D content, it has no animation system. It is connected to AppMonoController and AppController classes.
+
