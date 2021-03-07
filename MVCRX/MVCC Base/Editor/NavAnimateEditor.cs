@@ -59,7 +59,7 @@ public class NavAnimateEditor : Editor
             r.sizeDelta = Vector2.zero;
         }
 
-        if (_instance != null && _instance.animateOut.animateType == NAVANIM.NO_ANIM)
+        if (_instance != null && _instance.animateOut != null && _instance.animateOut.animateType == NAVANIM.NO_ANIM)
         {
             _instance.deactivateOnOut = false;
         }

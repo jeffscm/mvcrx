@@ -46,7 +46,6 @@ using UnityEngine;
 
 namespace MVCC
 {
-    [RequireComponent(typeof(Canvas))]
     public class SafeArea : MonoBehaviour
     {
         public RectTransform SafeAreaRect;
