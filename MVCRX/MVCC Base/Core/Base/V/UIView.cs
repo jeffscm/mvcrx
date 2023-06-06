@@ -71,6 +71,7 @@ namespace MVCC
                 OnPresent?.Invoke();
             });
             IsCurrent = true;
+            DidPresentView();
             MVCCLog.Log($"UIView Present {this.gameObject.name}");
         }
 
@@ -104,6 +105,8 @@ namespace MVCC
         public virtual void OnNavigationActivate() { }
 
         public virtual void OnNavigationDeactivate() { }
+
+        public virtual void DidPresentView() { }
 
     }
 }

@@ -89,8 +89,8 @@ namespace MVCC.Editor
             if (string.IsNullOrEmpty(_currentProject))
             {
                 _currentProject = EditorUtil.GetCurrentMVCC();
-
-                if (_lastTab != _tab) _mvccSetup.Setup(_currentProject);
+                
+                if (_lastTab != _tab && !string.IsNullOrEmpty(_currentProject)) _mvccSetup.Setup(_currentProject);
                 if (_mvccSetup.Display(this))
                 {
                     _currentProject = EditorUtil.GetCurrentMVCC();

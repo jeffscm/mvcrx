@@ -133,15 +133,15 @@ namespace MVCC.Editor
         public static List<Type> GetAllEntities()
         {
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                 .Where(x => x.GetInterface("INotify") != null && x.IsInterface)
-                 .ToList();
+                 .Where(x => x.GetInterfaces().FirstOrDefault(t => t.Name == "INotify") != null && x.IsInterface)
+                 .ToList<Type>();
         }
 
         public static List<Type> GetAllParamEntities()
         {
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
                  .Where(x => x.GetInterface("INotifyParam") != null && !x.IsInterface)
-                 .ToList();
+                 .ToList<Type>();
         }
 
         public static string PascalToCamelCase(string value)
